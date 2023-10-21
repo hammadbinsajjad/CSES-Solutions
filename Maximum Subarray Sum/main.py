@@ -13,17 +13,15 @@ def solve():
     n = inp_int()
     a = inp_list(int)
 
-    prev = a[0]
-    mx = prev
+    dp = [a[0]]
 
     for i in range(1, n):
-        if prev + a[i] > a[i]:
-            prev += a[i]
+        if dp[-1] + a[i] > a[i]:
+            dp.append(dp[-1] + a[i])
         else:
-            prev = a[i]
-        mx = max(prev, mx)
+            dp.append(a[i])
 
-    print(mx)
+    print(max(dp))
         
 
 def main():
