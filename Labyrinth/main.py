@@ -23,21 +23,32 @@ def main():
         if 'B' in row:
             end = (i, row.index('B'))
 
-    p = [[-1] * n for _ in range(n)]
+    parent = [[-1] * m for _ in range(n)]
 
-    res = bfs(graph, start)
+    res = bfs(graph, start, parent)
 
     if not res:
         print("NO")
     else:
         print("YES")
+        path = []
+        x, y = res
+        cur = parent[x][y]
+        while cur != -1:
+            path.append(cur[1])
+            x, y = cur[0]
+            cur = parent[x][y]
+        path.reverse()
+        print(len(path))
+        print("".join(c for c in path))
 
 
 
-def bfs(g, n):
+def bfs(g, n, p):
     q = clc.deque()
     push = q.append
     pop = q.popleft
+
 
     push(n)
 
@@ -45,9 +56,9 @@ def bfs(g, n):
         cur = pop()
         x, y = cur
 
-        inBounds = lambda x, n: 0 <= x < n
+        inBounds = lambda x, y, g: 0 <= x < len(g) and 0 <= y < len(g[0])
 
-        if not inBounds(x, len(g)) or not inBounds(y, len(g[0])) or g[x][y] == '#':
+        if not inBounds(x, y, g) or g[x][y] == '#':
             continue
 
         if g[x][y] == 'B':
@@ -55,13 +66,18 @@ def bfs(g, n):
 
         g[x][y] = "#"
 
-        for i in (1, -1):
-            if inBounds(x + i, len(g) and inBounds(y, len(g[0])):
-                p[x + i][j] = cur
-            if inBounds(x, len(g) and inBounds(y + i, len(g[0]):
-                p[x][j + i] = cur
-            bfs(g, (x + i, j))
-            bfs(g, (x, j + i))
+        if inBounds(x + 1, y, g) and g[x + 1][y] != '#':
+            push((x + 1, y))
+            p[x + 1][y] = (cur, "D")
+        if inBounds(x - 1, y, g)  and g[x - 1][y] != '#':
+            push((x - 1, y))
+            p[x - 1][y] = (cur, "U")
+        if inBounds(x, y + 1, g) and g[x][y + 1] != '#':
+            push((x, y + 1))
+            p[x][y + 1] = (cur, "R")
+        if inBounds(x, y - 1, g) and g[x][y - 1] != '#':
+            push((x, y - 1))
+            p[x][y - 1] = (cur, "L")
 
     return None
 

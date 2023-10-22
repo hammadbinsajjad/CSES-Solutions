@@ -1,15 +1,7 @@
- 
 import sys
-# import math
-# import bisect as bs
-# import string as strn
-# import heapq as hq
 import collections as clc
-# import itertools as it
-# import operator as op
-# import copy as cp
 
-to_debug = True
+to_debug = False
 def solve():
     n, m = inp_map(int)
 
@@ -17,25 +9,18 @@ def solve():
 
     for _ in range(m):
         a, b = inp_map(int)
-
         graph[a].append(b)
         graph[b].append(a)
 
 
     q = clc.deque()
-    p = []
-    q.append((1, p))
-    v = set()
+    p = [-1 for _ in range(n + 1)]
+    q.append(1)
+    v = set([1])
     found = False
 
     while q:
-        c, p = q.popleft()
-        # debug(q, c, p)
-
-        if c in v:
-            continue
-
-        v.add(c)
+        c = q.popleft()
 
         if c == n:
             found = True
@@ -43,16 +28,24 @@ def solve():
 
         for l in graph[c]:
             if l not in v:
-                q.append((l, p + [c]))
+                p[l] = c
+                q.append(l)
+                v.add(l)
 
     if found:
-        print(len(p) + 1)
-        for e in p:
-            print(e, end=" ")
-        print(n)
+        debug(p)
+        path = []
+        cur = p[-1]
+        while cur != -1:
+            path.append(cur)
+            cur = p[cur]
+        path.reverse()
+        print(len(path) + 1)
+        print(" ".join(str(i) for i in path) + " " + str(n))
+
     else:
         print("IMPOSSIBLE")
-
+ 
 def main():
     t = 1
     for _ in range(t):
